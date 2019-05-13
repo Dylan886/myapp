@@ -1,0 +1,371 @@
+<nz-layout>
+  <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="triggerTemplate">
+    <div class="logo">管理员
+    </div>
+    <ul nz-menu [nzTheme]="'dark'" [nzMode]="'inline'" [nzInlineCollapsed]="isCollapsed">
+      <li nz-menu-item (click)="mode = 'other'"><span title><i nz-icon type="user"></i><span class="nav-text">用户管理</span></span></li>
+      <li nz-submenu ><span title><i nz-icon type="file"></i><span class="nav-text">知识点管理</span></span>
+        <ul>
+          <li nz-menu-item (click)="this.loading=true; mode = 'approved'; this.getTheResource('审批通过')">合格资源</li>
+          <li nz-menu-item (click)="this.loading=true; mode = 'draft'; this.getTheResource('等待审核') ">未审批的资源</li>
+          <li nz-menu-item (click)="this.loading=true; mode = 'deny'; this.getTheResource('下线整改')">未过审资源</li>
+          <li nz-menu-item (click)="this.loading=true; mode = 'deleted'; this.getTheResource('已移除')">已下线的资源</li>
+        </ul>
+      </li>
+      <li nz-submenu><span title><i nz-icon type="file"></i><span class="nav-text">题库管理</span></span>
+        <ul>
+        <li nz-menu-item (click)="this.loading=true; mode = 'exam';this.getExam()">已有题目</li>
+        <li nz-menu-item (click)="this.loading=true; mode = 'testPaper';this.getTestPaper()">已有试卷</li>
+        </ul>
+      </li>
+      <li nz-menu-item ><a routerLink="/teacher"><span title><i nz-icon type="user"></i><span class="nav-text">跳转主页</span></span></a></li>
+    </ul>
+  </nz-sider>
+  <nz-layout>
+    <nz-header style="background: #fff; padding:0;">
+      <i class="trigger" nz-icon [type]="isCollapsed?'menu-unfold':'menu-fold'" (click)="isCollapsed=!isCollapsed"></i>
+      <a (click)="clean()" href="login">注销</a>
+    </nz-header>
+
+    <nz-content style="margin:0 16px;min-height: 500px">
+      <!--增加用户-->
+      <div *ngIf="'add'==mode">
+      <nz-breadcrumb style="margin:16px 0;">
+        <nz-breadcrumb-item >Create</nz-breadcrumb-item>
+        <nz-breadcrumb-item (click)="mode = 'other'">Read</nz-breadcrumb-item>
+        <nz-breadcrumb-item (click)="mode = 'other'">Update</nz-breadcrumb-item>
+        <nz-breadcrumb-item (click)="mode = 'other'">Delete</nz-breadcrumb-item>
+      </nz-breadcrumb>
+      <div style="padding:24px; background: #fff; min-height: 400px;">
+        <!---->
+        <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm($event,validateForm.value)">
+          <nz-form-item>
+            <nz-form-label [nzSpan]="7" nzRequired>Username</nz-form-label>
+            <nz-form-control [nzSpan]="12" nzHasFeedback>
+              <input nz-input formControlName="userName"  placeholder="new Username">
+              <nz-form-explain *ngIf="validateForm.get('userName').dirty && validateForm.get('userName').errors || validateForm.get('userName').pending ">
+                <ng-container *ngIf="validateForm.get('userName').hasError('required')">
+                  Please input your username!
+                </ng-container>
+                <ng-container *ngIf="validateForm.get('userName').hasError('duplicated')">
+                  The username is redundant!
+                </ng-container>
+                <ng-container *ngIf="validateForm.get('userName').pending">
+                  Validating...
+                </ng-container>
+              </nz-form-explain>
+            </nz-form-control>
+          </nz-form-item>
+          <!--<nz-form-item>-->
+            <!--<nz-form-label [nzSpan]="7" nzRequired>角色</nz-form-label>-->
+            <!--<nz-form-control [nzSpan]="12" nzHasFeedback>-->
+              <!--<nz-radio-group [(ngModel)]="level" [ngModelOptions]="{standalone: true}">-->
+                <!--&lt;!&ndash;<label nz-radio nzValue=1>老师</label>&ndash;&gt;-->
+                <!--<label nz-radio nzValue=1>学生</label>-->
+              <!--</nz-radio-group>-->
+            <!--</nz-form-control>-->
+          <!--</nz-form-item>-->
+          <nz-form-item>
+            <nz-form-label [nzSpan]="7" nzRequired>Age</nz-form-label>
+            <nz-form-control [nzSpan]="12" nzHasFeedback>
+              <nz-input-number [(ngModel)]="age" [nzMin]="1" [nzMax]="100" [nzStep]="1" [ngModelOptions]="{standalone: true}"></nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSpan]="7" nzRequired>Password</nz-form-label>
+            <div>
+              <nz-form-control [nzSpan]="12" nzHasFeedback>
+                <input nz-input type="password" formControlName="password" (ngModelChange)="validateConfirmPassword()">
+                <nz-form-explain *ngIf="validateForm.get('password').dirty&&validateForm.get('password').hasError('required')">Please input your password!</nz-form-explain>
+              </nz-form-control>
+            </div>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSpan]="7" nzRequired>Confirm Password</nz-form-label>
+            <nz-form-control [nzSpan]="12" nzHasFeedback>
+              <input nz-input type="password" formControlName="confirm" placeholder="confirm your password">
+              <nz-form-explain *ngIf="validateForm.get('confirm').dirty&&validateForm.get('confirm').errors">
+                <ng-container *ngIf="validateForm.get('confirm').hasError('required')">
+                  Please confirm your password!
+                </ng-container>
+                <ng-container *ngIf="validateForm.get('confirm').hasError('confirm')">
+                  Password is inconsistent!
+                </ng-container>
+              </nz-form-explain>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control [nzOffset]="7" [nzSpan]="12">
+              <button nz-button nzType="primary" [disabled]="!validateForm.valid">Submit</button>
+              <button nz-button (click)="resetForm($event)">Reset</button>
+            </nz-form-control>
+          </nz-form-item>
+
+        </form>
+
+      </div>
+      </div>
+
+      <!--其他操作-->
+      <div *ngIf="'other'==mode">
+        <nz-breadcrumb style="margin:16px 0;">
+          <nz-breadcrumb style="margin:16px 0;">
+            <nz-breadcrumb-item (click)="mode = 'add'">Create</nz-breadcrumb-item>
+            <nz-breadcrumb-item >Read</nz-breadcrumb-item>
+            <nz-breadcrumb-item >Update</nz-breadcrumb-item>
+            <nz-breadcrumb-item >Delete</nz-breadcrumb-item>
+          </nz-breadcrumb>
+        </nz-breadcrumb>
+        <div style="padding:24px; background: #fff; min-height: 400px;">
+        <!--table-->
+          <nz-table #nzTable [nzData]="user1" [nzLoading]="loading">
+            <thead>
+            <tr>
+              <th nzCustomFilter>
+                Name
+                <nz-dropdown nzTrigger="click" [nzClickHide]="false" #dropdown>
+                  <i nz-icon type="smile-o" class="ant-table-filter-icon" [class.ant-table-filter-open]="dropdown.nzVisible" nz-dropdown></i>
+                  <div class="custom-filter-dropdown">
+                    <input type="text" nz-input placeholder="Search name" [(ngModel)]="searchValue">
+                    <button nz-button [nzType]="'primary'" (click)="search()">Search</button>
+                  </div>
+                </nz-dropdown>
+              </th>
+              <th>Age</th>
+              <th>Password</th>
+              <th >type</th>
+              <th>update</th>
+              <th>delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of nzTable.data">
+              <td>{{data.loginname}}</td>
+              <td>{{data.age}}</td>
+              <td>{{data.password}}</td>
+              <td>{{data.type}}</td>
+              <td><i nz-icon type="edit" theme="outline" (click)="showModal(data) " ></i></td>
+              <td><i nz-icon type="delete" theme="outline" (click)="delete(data.id)"></i></td>
+
+            </tr>
+            </tbody>
+          </nz-table>
+
+        </div>
+
+
+        <nz-modal  [(nzVisible)]="isVisible" nzTitle="Update" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" >
+          <form nz-form  >
+            <nz-form-item>
+              <nz-form-label [nzSpan]="6" >username</nz-form-label>
+              <nz-form-control [nzSpan]="14">
+                <input nz-input name="username"  [(ngModel)]="modal_username">
+              </nz-form-control>
+              <nz-form-label [nzSpan]="6" >password</nz-form-label>
+              <nz-form-control [nzSpan]="14">
+                <input nz-input name="password" [(ngModel)]="modal_password">
+              </nz-form-control>
+              <nz-form-label [nzSpan]="6" >age</nz-form-label>
+              <nz-form-control [nzSpan]="14">
+                <input nz-input name="age" [(ngModel)]="modal_age">
+              </nz-form-control>
+              <!--<nz-form-label [nzSpan]="6" >[level]</nz-form-label>-->
+              <!--<nz-form-control [nzSpan]="14">-->
+                <!--<input nz-input name="level" [ngModel]="modal_level">-->
+              <!--</nz-form-control>-->
+            </nz-form-item >
+          </form>
+        </nz-modal>
+
+      </div>
+
+      <!--ResoureManager-->
+      <!--approved -->
+      <div *ngIf="'approved'==mode">
+        <div style="padding:24px; background: #fff; min-height: 400px;">
+          <!--table-->
+          <nz-table #nzTable [nzData]="resource1" [nzLoading]="loading">
+            <thead>
+            <tr>
+              <th>作者</th>
+              <th>资源类型</th>
+              <th >资源名称</th>
+              <th>资源位置</th>
+              <th>上传时间</th>
+              <th>删除</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of nzTable.data">
+              <td>{{data.author}}</td>
+              <td>{{data.type}}</td>
+              <td>localhost:8080/{{data.resourcename}}</td>
+              <td>{{data.url}}</td>
+              <td>{{data.date}}</td>
+              <td><i nz-icon type="delete" theme="outline" (click)="deleteResource(data.id)"></i></td>
+            </tr>
+            </tbody>
+          </nz-table>
+        </div>
+      </div>
+      <!--deny-->
+      <div *ngIf="'deny'==mode">
+        <div style="padding:24px; background: #fff; min-height: 400px;">
+          <!--table-->
+          <nz-table #nzTable [nzData]="resource1" [nzLoading]="loading">
+            <thead>
+            <tr>
+              <th>作者</th>
+              <th>资源类型</th>
+              <th >资源名称</th>
+              <th>资源位置</th>
+              <th>上传时间</th>
+              <th>审批情况</th>
+              <th>删除</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of nzTable.data">
+              <td>{{data.author}}</td>
+              <td>{{data.type}}</td>
+              <td>localhost:8080/{{data.resourcename}}</td>
+              <td>{{data.url}}</td>
+              <td>{{data.date}}</td>
+              <td>{{data.isusable}}</td>
+              <td><i nz-icon type="delete" theme="outline" (click)="deleteResource(data.id)"></i></td>
+            </tr>
+            </tbody>
+          </nz-table>
+
+        </div>
+      </div>
+      <!--deleted-->
+      <div *ngIf="'deleted'==mode">
+        <div style="padding:24px; background: #fff; min-height: 400px;">
+          <!--table-->
+          <nz-table #nzTable [nzData]="resource1" [nzLoading]="loading">
+            <thead>
+            <tr>
+              <th>作者</th>
+              <th>资源类型</th>
+              <th >资源名称</th>
+              <th>资源位置</th>
+              <th>上传时间</th>
+              <th>资源情况</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of nzTable.data">
+              <td>{{data.author}}</td>
+              <td>{{data.type}}</td>
+              <td>localhost:8080/{{data.resourcename}}</td>
+              <td>{{data.url}}</td>
+              <td>{{data.date}}</td>
+              <td>{{data.isusable}}</td>
+            </tr>
+            </tbody>
+          </nz-table>
+
+        </div>
+      </div>
+      <!--draft-->
+      <div *ngIf="'draft'==mode">
+        <div style="padding:24px; background: #fff; min-height: 400px;">
+          <!--table-->
+          <nz-table #nzTable [nzData]="resource1" [nzLoading]="loading">
+            <thead>
+            <tr>
+              <th>作者</th>
+              <th>资源类型</th>
+              <th >资源名称</th>
+              <th>资源位置</th>
+              <th>上传时间</th>
+              <th>审批情况</th>
+              <th>审批</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of nzTable.data">
+              <td>{{data.author}}</td>
+              <td>{{data.type}}</td>
+              <td>localhost:8080/{{data.resourcename}}</td>
+              <td>{{data.url}}</td>
+              <td>{{data.date}}</td>
+              <td>{{data.isusable}}</td>
+              <td><i nz-icon type="edit" theme="outline" (click)="this.isVisible = true" ></i></td>
+              <nz-modal [(nzVisible)]="isVisible" nzTitle="{{data.resourcename}}" (nzOnCancel)="handleCancel()" (nzOnOk)="this.loading = true; handleOk(); this.editResource(data.id)">
+                <span>审批情况：</span>
+                <nz-select style="width: 120px;" title="审批情况：" [(ngModel)]="approvalResult" >
+                  <nz-option nzValue="审批通过" nzLabel="审批通过"></nz-option>
+                  <nz-option nzValue="下线整改" nzLabel="下线整改"></nz-option>
+                </nz-select>
+              </nz-modal>
+
+            </tr>
+            </tbody>
+          </nz-table>
+
+        </div>
+      </div>
+
+      <!--Testpaper-->
+      <!--exam-->
+      <div *ngIf="'exam'==mode">
+        <div style="padding:24px; background: #fff; min-height: 400px;">
+          <!--table-->
+          <nz-table #nzTable [nzData]="exam" [nzLoading]="loading">
+            <thead>
+            <tr>
+              <th>题目类型</th>
+              <th >试题分值</th>
+              <th>试题</th>
+              <th>A选项</th>
+              <th>B选项</th>
+              <th>C选项</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of nzTable.data">
+              <td>{{data.type}}</td>
+              <td>{{data.grade}}</td>
+              <td>{{data.question}}</td>
+              <td>{{data.a}}</td>
+              <td>{{data.b}}</td>
+              <td>{{data.c}}</td>
+            </tr>
+            </tbody>
+          </nz-table>
+        </div>
+      </div>
+      <!--testPaper-->
+      <div *ngIf="'testPaper'==mode">
+        <div style="padding:24px; background: #fff; min-height: 400px;">
+          <!--table-->
+          <nz-table #nzTable [nzData]="testPaper" [nzLoading]="loading">
+            <thead>
+            <tr>
+              <th>作者</th>
+              <th >试卷名称</th>
+              <th>试卷难度</th>
+              <th>备注</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of nzTable.data">
+              <td>{{data.author}}</td>
+              <td>{{data.name}}</td>
+              <td>{{data.difficulty}}</td>
+              <td>{{data.remark}}</td>
+            </tr>
+            </tbody>
+          </nz-table>
+
+        </div>
+      </div>
+    </nz-content>
+    <nz-footer style="text-align: center;">Ant Design ©2017 Implement By Angular</nz-footer>
+  </nz-layout>
+</nz-layout>
+<ng-template #trigger>
+  <i nz-icon type="up"></i>
+</ng-template>

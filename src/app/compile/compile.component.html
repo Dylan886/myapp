@@ -1,0 +1,13 @@
+<!--在线编译-->
+<nz-breadcrumb style="font-size: 15px; line-height: 30px; padding-left: 10%">
+  <nz-breadcrumb-item>
+    <a routerLink="../teacher"><i nz-icon type="home"></i></a>
+  </nz-breadcrumb-item>
+  <nz-breadcrumb-item>
+    <a><i nz-icon type="user"></i><span>在线编写代码</span></a>
+  </nz-breadcrumb-item>
+</nz-breadcrumb>
+<div style="width: 60%; left: 80px; ">
+  <textarea rows="20" nz-input [(ngModel)]="compileCode" style="background-color: azure"></textarea>
+  <button nz-button (click)="compile()" style="text-align: center;">运行</button>
+</div>

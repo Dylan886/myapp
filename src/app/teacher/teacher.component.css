@@ -1,0 +1,38 @@
+.logo {
+  width: 120px;
+  height: 31px;
+  background: rgba(255,255,255,.2);
+  margin: 16px 28px 16px 0;
+  float: left;
+  text-align:center;
+  line-height: normal;
+  color: white;
+}
+:host ::ng-deep .ant-avatar {
+  margin-top: 16px;
+  margin-right: 16px;
+}
+[nz-button] {
+  margin-right: 20px;
+  margin-bottom: 30px;
+  float: right;
+  top:180px;
+}
+
+[nz-carousel-content] {
+  text-align: center;
+  height: 512px;
+  line-height: 160px;
+  background: #ffffff;
+  color: #fff;
+  overflow: hidden;
+}
+p {
+  margin: 0;
+}
+button {
+  margin-bottom: 16px;
+}
+[_ngcontent-c1] {
+  top: 0;
+}

@@ -1,0 +1,38 @@
+:host ::ng-deep .trigger {
+  font-size: 18px;
+  line-height: 64px;
+  padding: 0 24px;
+  cursor: pointer;
+  transition: color .3s;
+}
+
+:host ::ng-deep .trigger:hover {
+  color: #1890ff;
+}
+
+:host ::ng-deep .logo {
+  height: 32px;
+  background: rgba(255, 255, 255, .2);
+  margin: 16px;
+}
+[nz-form] {
+  max-width: 600px;
+}
+button {
+  margin-left: 8px;
+}
+.custom-filter-dropdown {
+  padding: 8px;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, .2);
+}
+
+[nz-input] {
+  width: 130px;
+  margin-right: 8px;
+}
+
+.highlight {
+  color: #f50;
+}
