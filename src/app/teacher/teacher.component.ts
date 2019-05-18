@@ -80,16 +80,18 @@ export class TeacherComponent implements OnInit {
   // 选择题目
   isTest = false;
   constructor(private userService: UserService, private http: HttpClient, private msg: NzMessageService,
-              private resourceService: ResourceService, public _activeRouter: ActivatedRoute,
+              private resourceService: ResourceService,
               private routers: Router, private sanitizer: DomSanitizer) {
-  if (localStorage.length <= 0) { alert('请先登录'); this.routers.navigate(['login']); }
   }
 
   ngOnInit() {
     if (sessionStorage.getItem('name') === null && sessionStorage.getItem('id') === null) {
-      this.routers.navigate(['login']);
+    // 游客身份
+      sessionStorage.setItem('name', '游客');
+      sessionStorage.setItem('id', '0');
+      sessionStorage.setItem('type', '游客');
     }
-
+    this.getTheText('OracleJDK和OpenJDK的对比.txt');
     this.getResource();
 
     // 用户参数
@@ -100,7 +102,7 @@ export class TeacherComponent implements OnInit {
     this.user.type = sessionStorage.getItem('type');
 
     // 获取对应知识内容
-    this.getText('OracleJDK和OpenJDK的对比.txt');
+    // this.getText('OracleJDK和OpenJDK的对比.txt');
 
   }
 
@@ -177,20 +179,29 @@ export class TeacherComponent implements OnInit {
     this.newResource.fill(this.resource, this.resource.length - 3, this.resource.length - 1);
   }
   // marketdown
-  private getText(fileName: string) {
-    // 文本内容
-    console.log(fileName);
-    return this.resourceService.getText(fileName)
-      .subscribe((re: any) => {
-        this.inputValue = re;
-        // 渲染数据
-        const str = fileName.split('.');
-        this.title = str[0];
-        this.renderPreView();
-      });
-
+  // private getText(fileName: string) {
+  //   // 文本内容
+  //   console.log(fileName);
+  //   return this.resourceService.getText(fileName)
+  //     .subscribe((re: any) => {
+  //       this.inputValue = re;
+  //       // 渲染数据
+  //       const str = fileName.split('.');
+  //       this.title = str[0];
+  //       this.renderPreView();
+  //     });
+  // }
+// 从服务器读取文件
+  private getTheText(fileName: string) {
+    this.resourceService.getContent(fileName).subscribe(re => {
+      console.log(re);
+      this.inputValue = re;
+      // 渲染数据
+      const str = fileName.split('.');
+      this.title = str[0];
+      this.renderPreView();
+    });
   }
-
   // 抽屉
   open(): void {
     this.visible = true;
@@ -327,7 +338,7 @@ export class TeacherComponent implements OnInit {
   changeSelected(selected: String ): void {
     const re = this.resource.filter( item => item.resourcename === selected );
     // 重新渲染
-    this.getText(re[0].resourcename + '.txt');
+    this.getTheText(re[0].resourcename + '.txt');
   }
 // Modal
   showModal(): void {
@@ -386,6 +397,12 @@ export class TeacherComponent implements OnInit {
       this.isTest = false;
       this.theTest = [];
     });
+  }
+  // 清理sessionStorage
+  private logout() {
+    sessionStorage.clear();
+    this.clear();
+    this.routers.navigate(['login']);
   }
 }
 

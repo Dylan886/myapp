@@ -28,11 +28,15 @@ export class ResourceService {
     // @ts-ignore
     return this.http.get<any>(this.Url + '/updateById', {params: data});
   }
+  //
+  // getText(fileName: string) {
+  //   let u = '../../assets/' + fileName;
+  //   console.log(u);
+  //   return this.http.get(u, {responseType: 'text'});
+  // }
 
-  getText(fileName: string) {
-    let u = '../../assets/' + fileName;
-    console.log(u);
-    return this.http.get(u, {responseType: 'text'});
+  getContent(fileName: string) {
+    return this.http.get(this.Url + '/getFile?fileName=' + fileName, {responseType: 'text'});
   }
 
   queryById(id: number) {
@@ -59,6 +63,29 @@ export class ResourceService {
 
   getExam(): Observable<any>  {
     return this.http.get<any>( 'http://localhost:8080/Exam/getAllExam', HTTP_OPTIONS);
+  }
+  updateExam(exam: Exam): Observable<any> {
+    const data = exam;
+    // @ts-ignore
+    return this.http.get<any>( 'http://localhost:8080/Exam/updateById', {params: data});
+  }
+  updateTestPaper(testPaper: TestPaper): Observable<any> {
+    console.log(testPaper)
+    const data = testPaper;
+    // @ts-ignore
+    return this.http.get<any>( 'http://localhost:8080/TestPaper/updateById', {params: data});
+  }
+  deleteExam(id: number) {
+    const data = {
+      'id': id.toString()
+    };
+    return this.http.get<any>('http://localhost:8080/Exam/deleteById' , {params: data});
+  }
+  deleteTestPaper(id: number) {
+    const data = {
+      'id': id.toString()
+    };
+    return this.http.get<any>('http://localhost:8080/TestPaper/deleteById' , {params: data});
   }
   getTestPaper(): Observable<any>  {
     return this.http.get<any>( 'http://localhost:8080/TestPaper/getAllTestPaper', HTTP_OPTIONS);

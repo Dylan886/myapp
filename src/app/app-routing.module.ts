@@ -8,14 +8,11 @@ import {TryComponent} from './try/try.component';
 import {CompileComponent} from './compile/compile.component';
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent,
-    children: [
-      { path: 'try', component: TryComponent}
-    ]},
+  { path: 'login', component: LoginComponent},
   { path: 'admin', component: AdminComponent},
   { path: 'compile', component: CompileComponent},
   { path: 'teacher', component: TeacherComponent},
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '', redirectTo: '/teacher', pathMatch: 'full' },
   {path: '**', component: ErrorComponent}
 ];
 

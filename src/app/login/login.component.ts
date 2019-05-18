@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
     if (this.validateForm.valid) {this.login(); }
   }
 
-  constructor(private fb: FormBuilder, private userService: UserService, private routers: Router, private routeInfo: ActivatedRoute ) {
+  constructor(private fb: FormBuilder, private userService: UserService, private routers: Router ) {
   }
 
   ngOnInit(): void {

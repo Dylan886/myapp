@@ -10,10 +10,13 @@ import {Router} from '@angular/router';
 import {Timeouts} from 'selenium-webdriver';
 import {Exam} from '../model/exam';
 import {TestPaper} from '../model/TestPaper';
-type MODE = 'add'|'other'|'approved'|'deny'|'draft'|'deleted'|'exam'|'testPaper';
+import {Jurisdiction} from '../model/Jurisdiction';
+type MODE = 'add'|'other'|'approved'|'deny'|'draft'|'deleted'|'exam'|'testPaper'|'ae'|'de'|'at'|'dt'| 'empower';
 // User: add, other
 // Resource: approved, deny, draft,deleted已移除
-// exam: exam, testPaper
+// exam: exam, ae, de
+// jurisdiction: empower
+// testPaper: testPaper, at, dt
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
@@ -30,6 +33,8 @@ export class AdminComponent implements OnInit {
   exam: Exam[];
   // testPaper
   testPaper: TestPaper[];
+  // jurisdiction
+  jurisdiction: Jurisdiction[];
   // html跳转
   mode: MODE  = 'other' ;
   // 双向绑定数据
@@ -219,7 +224,14 @@ export class AdminComponent implements OnInit {
       this.loading = false;
     });
   }
-
+deleteExam(id: any): void {
+    this.loading = true;
+    this.resourceService.deleteExam(id);
+}
+deleteTestPaper(id: any): void {
+    this.loading = true;
+    this.resourceService.deleteTestPaper(id);
+  }
   edit(): void {
     if (this.modal_id === 0) {
       const user = new User();
@@ -265,21 +277,43 @@ export class AdminComponent implements OnInit {
     });
   }
   // modal
-  showModal(data: User): void {
+  showModal(): void {
     this.loading = true;
     this.isVisible = true;
-    this.modal_id = data.id;
-    this.modal_username = data.loginname;
-    this.modal_password = data.password;
-    this.modal_age = data.age;
+    // this.modal_id = data.id;
+    // this.modal_username = data.loginname;
+    // this.modal_password = data.password;
+    // this.modal_age = data.age;
 
   }
-  handleOk(): void {
+
+  // 修改数据
+  handleOk(data: Object): void {
+    if (data.hasOwnProperty('a')) {
+      console.log(data);
+      this.resourceService.updateExam(<Exam>data).subscribe( re => {
+        this.loading = false;
+      });
+    } else if (data.hasOwnProperty('author')) {
+      console.log(data);
+      this.resourceService.updateTestPaper(<TestPaper>data).subscribe( re => {
+        this.loading = false;
+      });
+    } else if (data.hasOwnProperty('loginname')) {
+      this.userService.update(<User>data).subscribe(re => {
+        console.log(re) ;
+        this.getUser();
+        // 重新刷新数据
+        this.loading = false;
+      });
+    } else {
+        alert('修改失败');
+    }
     this.isVisible = false;
   }
   selectedValuehandleOk(): void {
     this.isOkLoading = true;
-    this.edit();
+    // this.edit();
     window.setTimeout(() => {
       this.isVisible = false;
       this.isOkLoading = false;
