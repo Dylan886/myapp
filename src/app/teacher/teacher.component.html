@@ -11,7 +11,7 @@
       <li nz-menu-item *ngIf="this.user.type !== '游客'" (click)="Pvisible=true">修改密码</li>
       <li nz-menu-item *ngIf="this.user.type !== '游客'" (click)="logout()">注销</li>
       <li nz-menu-item *ngIf="this.user.type === '游客'" (click)="logout()">登陆</li>
-      <li nz-menu-item *ngIf="this.user.type === 'admin'" ><a routerLink="../admin">管理中心</a></li>
+      <li nz-menu-item *ngIf="this.user.type !== '游客'" ><a routerLink="../admin">管理中心</a></li>
     </ul>
   </nz-header>
 
@@ -52,9 +52,8 @@
           <li nz-submenu>
             <span title><i nz-icon type="user"></i>JAVA设计模式</span>
             <ul>
-              <li nz-menu-item (click)="Sider ='12'">Java继承</li>
-              <li nz-menu-item (click)="Sider ='13'">Java多态</li>
-              <li nz-menu-item (click)="Sider ='14'">Java封装</li>
+              <li nz-menu-item (click)="Sider ='12'">单例模式</li>
+              <li nz-menu-item (click)="Sider ='13'">策略模式</li>
             </ul>
           </li>
         </ul>
@@ -71,15 +70,14 @@
       <!--集合框架的侧边栏-->
       <div *ngIf="MODE == 'fundament'">
         <ul nz-menu [nzMode]="'inline'" style="height:100%">
-          <li nz-menu-item (click)="Sider ='1'">Java简介</li>
-          <li nz-menu-item (click)="Sider ='2'">Java发展历史</li>
-          <li nz-menu-item (click)="Sider ='3'">Java对象和类</li>
-          <li nz-menu-item (click)="Sider ='4'">Java基本数据类型</li>
-          <li nz-menu-item (click)="Sider ='5'">Java变量类型</li>
-          <li nz-menu-item (click)="Sider ='6'">Java修饰符</li>
-          <li nz-menu-item (click)="Sider ='7'">Java运算符</li>
-          <li nz-menu-item (click)="Sider ='8'">Java循环结构</li>
-          <li nz-menu-item (click)="Sider ='9'">Java语句结构</li>
+          <li nz-menu-item (click)="Sider ='1'">简述Spring 框架</li>
+          <li nz-menu-item (click)="Sider ='2'">Spring 的优势</li>
+          <li nz-menu-item (click)="Sider ='3'">Spring IoC 和 DI 简介</li>
+          <li nz-menu-item (click)="Sider ='4'">Spring AOP 简介</li>
+          <li nz-menu-item (click)="Sider ='5'">Spring Boot 概述</li>
+          <li nz-menu-item (click)="Sider ='6'">Spring中的事物管理</li>
+          <li nz-menu-item (click)="Sider ='7'">Spring整合struts2</li>
+          <li nz-menu-item (click)="Sider ='8'">Spring整合hibernate</li>
         </ul>
       </div>
 
@@ -134,41 +132,30 @@
               </div>
             </div>
           </div>
+          <br>
+          <div class="idea" id="d3">
+            <h1>在线实例测试工具</h1>
+            <h2>在这里，浏览我们的知识点。</h2>
+            <h2>通过使用我们的在线编辑器，你可以编辑这些例子，并对代码进行实验。</h2>
+          </div>
+
           <!--知识点-->
           <div style=" padding: 50px 180px 20px 0px">
-            <h1>推荐知识点</h1>
-            <div style="background: #ECECEC;padding:30px;">
-              <div nz-row [nzGutter]="8" *ngFor="let a of newResource">
-                <div nz-col [nzSpan]="8">
-                  <nz-card nzTitle="{{a.resourcename}}">
-                  </nz-card>
-                </div>
-              </div>
-            </div>
+            <h1>最近新增资源：</h1>
+            <nz-timeline [nzPending]="'Recording...'" >
+              <nz-timeline-item *ngFor="let a of newResource">{{a.resourcename}}   {{a.date}}</nz-timeline-item>
+            </nz-timeline>
           </div>
-          <!--工具-->
-          <div style=" padding: 50px 180px 20px 0px">
-            <h1>推荐工具</h1>
-            <div style="background: #ECECEC;padding:30px;">
-              <div nz-row [nzGutter]="8">
-                <div nz-col [nzSpan]="8">
-                  <nz-card nzTitle="Card title">
-                    <p>Card content</p>
-                  </nz-card>
-                </div>
-                <div nz-col [nzSpan]="8">
-                  <nz-card nzTitle="Card title">
-                    <p>Card content</p>
-                  </nz-card>
-                </div>
-                <div nz-col [nzSpan]="8">
-                  <nz-card nzTitle="Card title">
-                    <p>Card content</p>
-                  </nz-card>
-                </div>
-              </div>
-            </div>
-          </div>
+          <nz-affix nzOffsetBottom="0">
+            <nz-popover >
+            <button nz-button [nzType]="'primary'" nz-popover>
+              <span>联系我们</span>
+            </button>
+              <ng-template #nzTemplate>
+                <img src="../../assets/img/mmqrcode1558633091977.png" width="200" height="200"/>
+              </ng-template>
+            </nz-popover>
+          </nz-affix>
         </div>
 
         <!--知识点模块-->
@@ -1140,6 +1127,37 @@
 
           </div>
 
+          <div *ngIf="Sider == '12'">
+            <p>1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单例模式：</p>
+            <p>实现方式：</p>
+            <p>a） 将被实现的类的构造方法设计成private的。</p>
+            <p>b） 添加此类引用的静态成员变量，并为其实例化。</p>
+            <p>c）&nbsp; 在被实现的类中提供公共的CreateInstance函数，返回实例化的此类,就是b中的静态成员变量。</p>
+            <p>&nbsp;</p>
+            <p>应用场景：</p>
+            <p>优点：&nbsp;<br />&nbsp;&nbsp;&nbsp; 1.在单例模式中，活动的单例只有一个实例，对单例类的所有实例化得到的都是相同的一个实例。这样就 防止其它对象对自己的实例化，确保所有的对象都访问一个实例&nbsp;<br />&nbsp;&nbsp;&nbsp; 2.单例模式具有一定的伸缩性，类自己来控制实例化进程，类就在改变实例化进程上有相应的伸缩性。&nbsp;<br />&nbsp;&nbsp;&nbsp; 3.提供了对唯一实例的受控访问。&nbsp;<br />&nbsp;&nbsp;&nbsp; 4.由于在系统内存中只存在一个对象，因此可以 节约系统资源，当 需要频繁创建和销毁的对象时单例模式无疑可以提高系统的性能。&nbsp;<br />&nbsp;&nbsp;&nbsp; 5.允许可变数目的实例。&nbsp;<br />&nbsp;&nbsp;&nbsp; 6.避免对共享资源的多重占用。&nbsp;<br />缺点：&nbsp;<br />&nbsp;&nbsp;&nbsp; 1.不适用于变化的对象，如果同一类型的对象总是要在不同的用例场景发生变化，单例就会引起数据的错误，不能保存彼此的状态。&nbsp;<br />&nbsp;&nbsp;&nbsp; 2.由于单利模式中没有抽象层，因此单例类的扩展有很大的困难。&nbsp;<br />&nbsp;&nbsp;&nbsp; 3.单例类的职责过重，在一定程度上违背了&ldquo;单一职责原则&rdquo;。&nbsp;<br />&nbsp;&nbsp;&nbsp; 4.滥用单例将带来一些负面问题，如为了节省资源将数据库连接池对象设计为的单例类，可能会导致共享连接池对象的程序过多而出现连接池溢出；如果实例化的对象长时间不被利用，系统会认为是垃圾而被回收，这将导致对象状态的丢失。&nbsp;<br />使用注意事项：&nbsp;<br />&nbsp;&nbsp;&nbsp; 1.使用时不能用反射模式创建单例，否则会实例化一个新的对象&nbsp;<br />&nbsp;&nbsp;&nbsp; 2.使用懒单例模式时注意线程安全问题&nbsp;<br />&nbsp;&nbsp;&nbsp; 3.单例模式和懒单例模式构造方法都是私有的，因而是不能被继承的，有些单例模式可以被继承（如登记式模式）&nbsp;<br />适用场景：&nbsp;<br />&nbsp;&nbsp;&nbsp; 单例模式只允许创建一个对象，因此节省内存，加快对象访问速度，因此对象需要被公用的场合适合使用，如多个模块使用同一个数据源连接对象等等。如：&nbsp;<br />&nbsp;&nbsp;&nbsp; 1.需要频繁实例化然后销毁的对象。&nbsp;<br />&nbsp;&nbsp;&nbsp; 2.创建对象时耗时过多或者耗资源过多，但又经常用到的对象。&nbsp;<br />&nbsp;&nbsp;&nbsp; 3.有状态的工具类对象。&nbsp;<br />&nbsp;&nbsp;&nbsp; 4.频繁访问数据库或文件的对象。&nbsp;<br />以下都是单例模式的经典使用场景：&nbsp;<br />&nbsp;&nbsp;&nbsp; 1.资源共享的情况下，避免由于资源操作时导致的性能或损耗等。如上述中的日志文件，应用配置。&nbsp;<br />&nbsp;&nbsp;&nbsp; 2.控制资源的情况下，方便资源之间的互相通信。如线程池等。&nbsp;<br />应用场景举例：&nbsp;<br />&nbsp;&nbsp;&nbsp; 1.外部资源：每台计算机有若干个打印机，但只能有一个PrinterSpooler，以避免两个打印作业同时输出到打印机。内部资源：大多数软件都有一个（或多个）属性文件存放系统配置，这样的系统应该有一个对象管理这些属性文件&nbsp;<br />&nbsp;&nbsp;&nbsp; 2. Windows的TaskManager（任务管理器）就是很典型的单例模式（这个很熟悉吧），想想看，是不是呢，你能打开两个windows task manager吗？ 不信你自己试试看哦~&nbsp;<br />&nbsp;&nbsp;&nbsp; 3. windows的Recycle Bin（回收站）也是典型的单例应用。在整个系统运行过程中，回收站一直维护着仅有的一个实例。&nbsp;<br />&nbsp;&nbsp;&nbsp; 4. 网站的计数器，一般也是采用单例模式实现，否则难以同步。&nbsp;<br />&nbsp;&nbsp;&nbsp; 5. 应用程序的日志应用，一般都何用单例模式实现，这一般是由于共享的日志文件一直处于打开状态，因为只能有一个实例去操作，否则内容不好追加。&nbsp;<br />&nbsp;&nbsp;&nbsp; 6. Web应用的配置对象的读取，一般也应用单例模式，这个是由于配置文件是共享的资源。&nbsp;<br />&nbsp;&nbsp;&nbsp; 7. 数据库连接池的设计一般也是采用单例模式，因为数据库连接是一种数据库资源。数据库软件系统中使用数据库连接池，主要是节省打开或者关闭数据库连接所引起的效率损耗，这种效率上的损耗还是非常昂贵的，因为何用单例模式来维护，就可以大大降低这种损耗。&nbsp;<br />&nbsp;&nbsp;&nbsp; 8. 多线程的线程池的设计一般也是采用单例模式，这是由于线程池要方便对池中的线程进行控制。&nbsp;<br />&nbsp;&nbsp;&nbsp; 9. 操作系统的文件系统，也是大的单例模式实现的具体例子，一个操作系统只能有一个文件系统。&nbsp;<br />&nbsp;&nbsp;&nbsp; 10. HttpApplication 也是单位例的典型应用。熟悉ASP.Net(IIS)的整个请求生命周期的人应该知道HttpApplication也是单例模式，所有的HttpModule都共享一个HttpApplication实例.&nbsp;</p>
+            <p>&nbsp;<img src="http://blog.csdn.net/dean_hu/article/details/71195133" alt="" /></p>
+          </div>
+
+          <div *ngIf="Sider == '13'">
+            <p>2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;策略模式：</p>
+            <p>实现方式：</p>
+            <p>a)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 提供公共接口或抽象类，定义需要使用的策略方法。（策略抽象类）</p>
+            <p>b)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 多个实现的策略抽象类的实现类。（策略实现类）</p>
+            <p>c)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 环境类，对多个实现类的封装，提供接口类型的成员量，可以在客户端中切换。</p>
+            <p>d)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 客户端 调用环境类 进行不同策略的切换。</p>
+            <p>注：Jdk中的TreeSet和&nbsp;TreeMap的排序功能就是使用了策略模式。</p>
+            <p>&nbsp;</p>
+            <p><img src="http://blog.csdn.net/dean_hu/article/details/71195133" alt="" /></p>
+            <p><img src="http://blog.csdn.net/dean_hu/article/details/71195133" alt="" /></p>
+            <h1><a name="t0"></a>策略模式的优点</h1>
+            <p>　　（1）策略模式提供了管理相关的算法族的办法。策略类的等级结构定义了一个算法或行为族。恰当使用继承可以把公共的代码移到父类里面，从而避免代码重复。</p>
+            <p>　　（2）使用策略模式可以避免使用多重条件(if-else)语句。多重条件语句不易维护，它把采取哪一种算法或采取哪一种行为的逻辑与算法或行为的逻辑混合在一起，统统列在一个多重条件语句里面，比使用继承的办法还要原始和落后。</p>
+            <h1><a name="t1"></a>策略模式的缺点</h1>
+            <p>　　（1）客户端必须知道所有的策略类，并自行决定使用哪一个策略类。这就意味着客户端必须理解这些算法的区别，以便适时选择恰当的算法类。换言之，策略模式只适用于客户端知道算法或行为的情况。</p>
+            <p>　　（2）由于策略模式把每个具体的策略实现都单独封装成为类，如果备选的策略很多的话，那么对象的数目就会很可观。</p>
+
+          </div>
         </div>
 
         <!--拓展知识模块-->
@@ -1408,15 +1426,99 @@
           </div>
 
           <div *ngIf="Sider == '6'">
+            <h3 style="line-height:1.75;font-size:14px;">1、事务认识</h3>
+            <div style="line-height:1.75;font-size:14px;">大家所了解的事务Transaction，它是一些列严密操作动作，要么都操作完成，要么都回滚撤销。Spring事务管理基于底层数据库本身的事务处理机制。数据库事务的基础，是掌握Spring事务管理的基础。这篇总结下Spring事务。</div>
+            <div style="line-height:1.75;font-size:14px;">事务具备ACID四种特性，ACID是Atomic（原子性）、Consistency（一致性）、Isolation（隔离性）和Durability（持久性）的英文缩写。</div>
+            <div style="line-height:1.75;font-size:14px;">（1）原子性（Atomicity）</div>
+            <div style="line-height:1.75;font-size:14px;">事务最基本的操作单元，要么全部成功，要么全部失败，不会结束在中间某个环节。事务在执行过程中发生错误，会被回滚到事务开始前的状态，就像这个事务从来没有执行过一样。</div>
+            <div style="line-height:1.75;font-size:14px;">（2）一致性（Consistency）</div>
+            <div style="line-height:1.75;font-size:14px;">事务的一致性指的是在一个事务执行之前和执行之后数据库都必须处于一致性状态。如果事务成功地完成，那么系统中所有变化将正确地应用，系统处于有效状态。如果在事务中出现错误，那么系统中的所有变化将自动地回滚，系统返回到原始状态。</div>
+            <div style="line-height:1.75;font-size:14px;">（3）隔离性（Isolation）</div>
+            <div style="line-height:1.75;font-size:14px;">指的是在并发环境中，当不同的事务同时操纵相同的数据时，每个事务都有各自的完整数据空间。由并发事务所做的修改必须与任何其他并发事务所做的修改隔离。事务查看数据更新时，数据所处的状态要么是另一事务修改它之前的状态，要么是另一事务修改它之后的状态，事务不会查看到中间状态的数据。</div>
+            <div style="line-height:1.75;font-size:14px;">（4）持久性（Durability）</div>
+            <div style="line-height:1.75;font-size:14px;">指的是只要事务成功结束，它对数据库所做的更新就必须永久保存下来。即使发生系统崩溃，重新启动数据库系统后，数据库还能恢复到事务成功结束时的状态。</div>
+            <h3 style="line-height:1.75;font-size:14px;">2、事务的传播特性 </h3>
+            <div style="line-height:1.75;font-size:14px;">事务传播行为就是多个事务方法调用时，如何定义方法间事务的传播。Spring定义了7中传播行为：</div>
+            <div style="line-height:1.75;font-size:14px;">（1）propagation_requierd：如果当前没有事务，就新建一个事务，如果已存在一个事务中，加入到这个事务中，这是Spring默认的选择。</div>
+            <div style="line-height:1.75;font-size:14px;">（2）propagation_supports：支持当前事务，如果没有当前事务，就以非事务方法执行。</div>
+            <div style="line-height:1.75;font-size:14px;">（3）propagation_mandatory：使用当前事务，如果没有当前事务，就抛出异常。</div>
+            <div style="line-height:1.75;font-size:14px;">（4）propagation_required_new：新建事务，如果当前存在事务，把当前事务挂起。</div>
+            <div style="line-height:1.75;font-size:14px;">（5）propagation_not_supported：以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。</div>
+            <div style="line-height:1.75;font-size:14px;">（6）propagation_never：以非事务方式执行操作，如果当前事务存在则抛出异常。</div>
+            <div style="line-height:1.75;font-size:14px;">（7）propagation_nested：如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则执行与propagation_required类似的操作。</div>
             <video src="../../assets/事务.mp4" height="300" width="500" controls="controls" type="video/mp4">您的浏览器不支持播放该视频！</video>
+            <h3 style="line-height:1.75;font-size:14px;">3、事务的隔离级别</h3>
+            <div style="line-height:1.75;font-size:14px;">（1）read uncommited：是最低的事务隔离级别，它允许另外一个事务可以看到这个事务未提交的数据。</div>
+            <div style="line-height:1.75;font-size:14px;">（2）read commited：保证一个事物提交后才能被另外一个事务读取。另外一个事务不能读取该事物未提交的数据。</div>
+            <div style="line-height:1.75;font-size:14px;">（3）repeatable read：这种事务隔离级别可以防止脏读，不可重复读。但是可能会出现幻象读。它除了保证一个事务不能被另外一个事务读取未提交的数据之外还避免了以下情况产生（不可重复读）。</div>
+            <div style="line-height:1.75;font-size:14px;">（4）serializable：这是花费最高代价但最可靠的事务隔离级别。事务被处理为顺序执行。除了防止脏读，不可重复读之外，还避免了幻象读</div>
+            <div style="line-height:1.75;font-size:14px;">（5）脏读、不可重复读、幻象读概念说明：</div>
+            <div style="line-height:1.75;font-size:14px;">a.脏读：指当一个事务正字访问数据，并且对数据进行了修改，而这种数据还没有提交到数据库中，这时，另外一个事务也访问这个数据，然后使用了这个数据。因为这个数据还没有提交那么另外一个事务读取到的这个数据我们称之为脏数据。依据脏数据所做的操作肯能是不正确的。</div>
+            <div style="line-height:1.75;font-size:14px;">b.不可重复读：指在一个事务内，多次读同一数据。在这个事务还没有执行结束，另外一个事务也访问该同一数据，那么在第一个事务中的两次读取数据之间，由于第二个事务的修改第一个事务两次读到的数据可能是不一样的，这样就发生了在一个事物内两次连续读到的数据是不一样的，这种情况被称为是不可重复读。</div>
+            <div style="line-height:1.75;font-size:14px;">c.幻象读：一个事务先后读取一个范围的记录，但两次读取的纪录数不同，我们称之为幻象读（两次执行同一条 select 语句会出现不同的结果，第二次读会增加一数据行，并没有说这两次执行是在同一个事务中）</div>
+            <h4 style="line-height:1.75;font-size:14px;">4、事务几种实现方式</h4>
+            <div style="line-height:1.75;font-size:14px;">（1）编程式事务管理对基于 POJO 的应用来说是唯一选择。我们需要在代码中调用beginTransaction()、commit()、rollback()等事务管理相关的方法，这就是编程式事务管理。</div>
+            <div style="line-height:1.75;font-size:14px;">（2）基于 TransactionProxyFactoryBean的声明式事务管理</div>
+            <div style="line-height:1.75;font-size:14px;">（3）基于 @Transactional 的声明式事务管理</div>
+            <div style="line-height:1.75;font-size:14px;">（4）基于Aspectj AOP配置事务</div>
           </div>
 
           <div *ngIf="Sider == '7'">
+            <h3><strong>Struts2</strong></h3>
+
+            <p><strong>Struts2是一个基于MVC设计模式的Web应用框架，它本质上相当于一个servlet，在MVC设计模式中，Struts2作为控制器(Controller)来建立模型与视图的数据交互。Struts2是Struts的下一代产品，这个框架充分发挥了Struts1和WebWork这两种技术的优势，抛弃原来Struts1的缺点，使得Web开发更加容易。</strong></p>
+
+            <p><strong>struts2还有以下优点：</strong></p>
+
+            <ul><li><strong>项目开源，使用及扩展方便 - 天生优势；</strong></li>
+              <li><strong>提供Exception处理机制；</strong></li>
+              <li><strong>Result 方式的页面导航，通过 Result 标签很方便的实现重定向和页面跳转；</strong></li>
+              <li><strong>通过简单、集中的配置来调度业务类，使得配置和修改都非常容易；</strong></li>
+              <li><strong>提供简单、统一的表达式语言来访问所有可供访问的数据；</strong></li>
+              <li><strong>提供标准、强大的验证框架和国际化框架；</strong></li>
+              <li><strong>提供强大的、可以有效减少页面代码的标签；</strong></li>
+              <li><strong>提供良好的Ajax支持；</strong></li>
+              <li><strong>拥有简单的插件，只需要放入响应的 jar 包，任何人都可以扩展 Struts2 框架。</strong></li>
+            </ul>
             <video src="../../assets/Spring集成Struts2.mp4" height="300" width="500" controls="controls" type="video/mp4">您的浏览器不支持播放该视频！</video>
+
           </div>
 
           <div *ngIf="Sider == '8'">
-          <video src="../../assets/Spring整合Hibernate.mp4" height="300" width="500" controls="controls" type="video/mp4">您的浏览器不支持播放该视频！</video>
+            <p><strong>一、Hibernate是对JDBC进一步封装</strong></p>
+            <p>&nbsp; &nbsp; &nbsp; &nbsp;原来没有使用Hiberante做持久层开发时，存在很多冗余，如：各种JDBC语句，connection的管理，所以出现了Hibernate把JDBC封装了一下，我们不用操作数据，直接操作它就行了。</p>
+            <p><strong>二、我们再从分层的角度来看</strong></p>
+            <p>&nbsp; &nbsp; &nbsp; 典型的三层<a class="replace_word" title="大型网站架构知识库" href="http://lib.csdn.net/base/architecture" target="_blank">架构</a>：表示层，业务层，还有持久层。Hiberante也是持久层的框架，而且持久层的框架还有很多，比如：IBatis，Nhibernate，JDO，OJB，EJB等等。</p>
+            <p><strong>三、Hibernate是开源的一个ORM（对象关系映射）</strong><strong>框架</strong>。</p>
+            <p>&nbsp; &nbsp; &nbsp; ORM，即Object-Relational Mapping，它的作用就是在关系型数据库和对象之间做了一个映射。从对象（Object）映射到关系（Relation），再从关系映射到对象。这样，我们在操作数据库的时候，不需要再去和复杂SQL打交道，只<span style="font-family: 宋体;">要像操作对象一样操作它就可以了（把关系数据库的字段在内存中映射成对象的属性）。</span></p>
+            <h1>Hibernate的核心：</h1>
+            <p>　　Hibernate六大核心接口，两个主要配置文件</p>
+            <p>1、Configuration接口:负责配置并启动Hibernate</p>
+            <p>2、SessionFactory接口:负责初始化Hibernate</p>
+            <p>3、Session接口:负责持久化对象的CRUD操作</p>
+            <p>4、Transaction接口:负责事务</p>
+            <p>5、Query接口和Criteria接口:负责执行各种数据库查询</p>
+            <p>注意：Configuration实例是一个启动期间的对象，一旦SessionFactory创建完成它就被丢弃了。</p>
+            <video src="../../assets/Spring整合Hibernate.mp4" height="300" width="500" controls="controls" type="video/mp4">您的浏览器不支持播放该视频！</video>
+            <h1><span lang="en-US">H<span lang="en-US">ibernate<span lang="zh-CN">运行过程：</span></span></span></h1>
+            <p>1.通过Configuration().configure();读取并解析hibernate.cfg.xml配置文件</p>
+            <p>2.由hibernate.cfg.xml中的&lt;mappingresource="com/xx/User.hbm.xml"/&gt;读取并解析映射信息</p>
+            <p>3.通过config.buildSessionFactory();//创建SessionFactory</p>
+            <p>4.sessionFactory.openSession();//打开Sesssion</p>
+            <p>5.session.beginTransaction();//创建事务Transation</p>
+            <p><span lang="zh-CN">6.persistent operate持久化操作<span lang="en-US">&nbsp;//<span lang="zh-CN">一般指<span lang="en-US">S<span lang="en-US">ave<span lang="zh-CN">这个方法</span></span></span></span></span></span></p>
+            <p>7.session.getTransaction().commit();//提交事务</p>
+            <p>8.关闭Session</p>
+            <p>9.关闭SesstionFactory</p>
+            <h1>Hibernate的优/缺点：</h1>
+            <p>优点：</p>
+            <p>1、更加对象化</p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 以对象化的思维操作数据库，我们只需要操作对象就可以了，开发更加对象化。</p>
+            <p>2、移植性<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 因为Hibernate做了持久层的封装，你就不知道数据库，你写的所有的代码都具有可复用性。</p>
+            <p>3、Hibernate是一个没有侵入性的框架，没有侵入性的框架我们称为轻量级框架。</p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 对比Struts的Action和ActionForm，都需要继承，离不开Struts。Hibernate不需要继承任何类，不需要实现任何接口。这样的对象叫POJO对象。</p>
+            <p>4、Hibernate代码<a class="replace_word" title="软件测试知识库" href="http://lib.csdn.net/base/softwaretest" target="_blank">测试</a>方便。</p>
+            <p>5、提高效率，提高生产力。</p>
         </div>
         </div>
 

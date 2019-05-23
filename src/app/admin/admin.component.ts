@@ -11,7 +11,7 @@ import {Timeouts} from 'selenium-webdriver';
 import {Exam} from '../model/exam';
 import {TestPaper} from '../model/TestPaper';
 import {Jurisdiction} from '../model/Jurisdiction';
-type MODE = 'add'|'other'|'approved'|'deny'|'draft'|'deleted'|'exam'|'testPaper'|'ae'|'de'|'at'|'dt'| 'empower';
+type MODE = 'null'|'add'|'other'|'approved'|'deny'|'draft'|'deleted'|'exam'|'testPaper'|'ae'|'de'|'at'|'dt'| 'empower';
 // User: add, other
 // Resource: approved, deny, draft,deleted已移除
 // exam: exam, ae, de
@@ -35,14 +35,20 @@ export class AdminComponent implements OnInit {
   testPaper: TestPaper[];
   // jurisdiction
   jurisdiction: Jurisdiction[];
+  // 登录用户的权限
+  theJur: String;
   // html跳转
-  mode: MODE  = 'other' ;
+  mode: MODE  = 'null' ;
   // 双向绑定数据
   age = 20;
   inputValue: string;
   username: string;
   password: string;
   options = [];
+  listOfOption = [{ label: '用户管理', value: '用户管理'},
+                  { label: '资源管理', value: '资源管理'},
+                  { label: '题库管理', value: '题库管理'},
+                  { label: '试卷管理', value: '试卷管理'}]; // 所有
   // 侧边栏
   isCollapsed = false;
   triggerTemplate = null;
@@ -80,15 +86,17 @@ export class AdminComponent implements OnInit {
     if (sessionStorage.getItem('name') === null && sessionStorage.getItem('id') === null) {
       this.routers.navigate(['login']);
     }
+    this.getJur();
     this.getUser();
     this.getResource();
   }
   // 获取数据
   private getUser(): void {
+    const Uid = 1;
     this.userService.queryAllUser().subscribe((re: any[]) => {
       this.user = re; // 获取全部数据
       this.user1 = re;
-      console.log(re);
+      this.insertJur(re[re.length - 1].id);
       this.loading = false;
     });
   }
@@ -106,7 +114,7 @@ export class AdminComponent implements OnInit {
     this.loading = true;
     this.resourceService.getTestPaper().subscribe((re: any[]) => {
       this.testPaper = re; // 获取全部数据
-      for (let i of this.testPaper) {
+      for (const i of this.testPaper) {
        this.userService.queryById(i.uid).subscribe((u: User) => {
          i.author = u.loginname;
        });
@@ -153,12 +161,11 @@ export class AdminComponent implements OnInit {
     }
     // 如果表单验证通过
       this.userService.add(value, this.age).subscribe(data =>  {
-      this.getUser();
-      this.loading = false;
+        this.getUser();
+        this.loading = false;
     });
       this.mode = 'other';
     this.validateForm.reset();
-
   }
 
   resetForm(e: MouseEvent): void {
@@ -177,7 +184,7 @@ export class AdminComponent implements OnInit {
   // 判断名称是否重复
   userNameAsyncValidator = (control: FormControl) => Observable.create((observer: Observer<ValidationErrors>) => {
     setTimeout(() => {
-      for (let u of this.user) {
+      for (const u of this.user) {
         if (control.value === u.loginname) {
           observer.next({ error: true, duplicated: true });
           observer.complete();
@@ -199,7 +206,7 @@ export class AdminComponent implements OnInit {
     // 此处是保存过滤后的数据
     let ms: any;
     this.user1 = this.user.filter(item => item.loginname === value);
-    for (let u of  this.user1) {
+    for (const u of  this.user1) {
       ms = u.loginname;
     }
     this.options = value ? [
@@ -230,7 +237,11 @@ deleteExam(id: any): void {
 }
 deleteTestPaper(id: any): void {
     this.loading = true;
-    this.resourceService.deleteTestPaper(id);
+    this.resourceService.deleteTestPaper(id).subscribe( date => {
+      console.log(date);
+      this.getTestPaper();
+      this.loading = false;
+    });
   }
   edit(): void {
     if (this.modal_id === 0) {
@@ -294,7 +305,7 @@ deleteTestPaper(id: any): void {
       this.resourceService.updateExam(<Exam>data).subscribe( re => {
         this.loading = false;
       });
-    } else if (data.hasOwnProperty('author')) {
+    } else if (data.hasOwnProperty('difficulty')) {
       console.log(data);
       this.resourceService.updateTestPaper(<TestPaper>data).subscribe( re => {
         this.loading = false;
@@ -304,6 +315,14 @@ deleteTestPaper(id: any): void {
         console.log(re) ;
         this.getUser();
         // 重新刷新数据
+        this.loading = false;
+      });
+    } else if (data.hasOwnProperty('isavailable')) {
+      console.log(data);
+      // let j = <Jurisdiction>data;
+      // j.mode = j.mode.toString();
+      this.userService.updateJur(<Jurisdiction>data).subscribe( re => {
+        console.log(re);
         this.loading = false;
       });
     } else {
@@ -320,6 +339,27 @@ deleteTestPaper(id: any): void {
     }, 1000);
   }
 
+  private insertJur(uid: number): void {
+    if (uid === 1) { return ; }
+    this.userService.getJur(uid).subscribe( date => {
+      if (date === null) { this.userService.addJur(uid).subscribe( data => {
+        console.log(data);
+        });
+      }
+    });
+  }
+  private getAllJur() {
+    this.userService.getAllJur().subscribe( (re: any) => {
+      this.jurisdiction = re;
+      for (const j of this.jurisdiction) {
+        const u = this.user.filter(item => item.id === j.uid);
+        j.author = u[0].loginname;
+        console.log(j.author);
+      }
+
+      this.loading = false;
+    });
+  }
   handleCancel(): void {
     this.isVisible = false;
     this.loading =     false;
@@ -328,5 +368,21 @@ deleteTestPaper(id: any): void {
   clean(): void {
     sessionStorage.clear();
 }
-
+// 获取登录用户的权限
+  private getJur() {
+    if (sessionStorage.getItem('type') === 'admin') {
+      return;
+    }
+    this.theJur = sessionStorage.getItem('mode');
+    console.log(this.theJur);
+  }
+  // 判断是否有指定权限
+   private Judge(name: string) {
+    const type = sessionStorage.getItem('type');
+      if (type === 'admin') { return; }
+     if (this.theJur.indexOf(name) === -1 ) {
+       alert('权限不足！请联系你的管理员申请权限！');
+       this.mode = 'null';
+     }
+   }
 }

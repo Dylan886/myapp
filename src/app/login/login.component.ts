@@ -40,6 +40,11 @@ export class LoginComponent implements OnInit {
         this.password = null;
         alert('账号或者密码错误，请重新输入');
       } else {
+        if (this.user.type === 'teacher') {
+          this.userService.getJur(this.user.id).subscribe( re => {
+            sessionStorage.setItem('mode', re.mode);
+          });
+        }
         sessionStorage.setItem('name', this.username);
         sessionStorage.setItem('type', this.user.type);
         sessionStorage.setItem('id', this.user.id);

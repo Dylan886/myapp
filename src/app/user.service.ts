@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {HTTP_OPTIONS} from './interceptor/http.interceptor';
 import {User} from './model/User';
+import {Jurisdiction} from './model/Jurisdiction';
 @Injectable({
   providedIn: 'root'
 })
@@ -56,5 +57,30 @@ export class UserService {
       })
     };
     return this.http.post<any>(this.Url + '/updateById',  JSON.stringify(u), headers);
+  }
+  addJur(id: number): Observable<Jurisdiction> {
+    const dates = {
+      'mode': '新建题目',
+      'isavailable': '是',
+      'uid': id.toString()
+    };
+    return this.http.get<any>('http://localhost:8080/Jurisdiction/insert',  {params: dates});
+  }
+  getJur(id: number): Observable<Jurisdiction> {
+    const dates = {
+      'uid': id.toString()
+    };
+    return this.http.get<any>('http://localhost:8080/Jurisdiction/getJurisdictionByUId', {params: dates});
+  }
+  getAllJur(): Observable<Jurisdiction> {
+    return this.http.get<any>('http://localhost:8080/Jurisdiction/getAll', HTTP_OPTIONS);
+  }
+
+  updateJur(data: Jurisdiction) {
+    let u = data;
+    u.mode = data.mode.toString();
+    console.log(u);
+    // @ts-ignore
+    return this.http.get<any>('http://localhost:8080/Jurisdiction/updateById',  {params: u});
   }
 }

@@ -65,12 +65,21 @@ export class ResourceService {
     return this.http.get<any>( 'http://localhost:8080/Exam/getAllExam', HTTP_OPTIONS);
   }
   updateExam(exam: Exam): Observable<any> {
-    const data = exam;
+    const data = {
+      'id': exam.id,
+      'question': exam.question,
+      'a': exam.a,
+      'b': exam.b,
+      'c': exam.c,
+      'type': exam.type,
+      'grade': exam.grade
+    };
+    console.log(data);
     // @ts-ignore
     return this.http.get<any>( 'http://localhost:8080/Exam/updateById', {params: data});
   }
   updateTestPaper(testPaper: TestPaper): Observable<any> {
-    console.log(testPaper)
+    console.log(testPaper);
     const data = testPaper;
     // @ts-ignore
     return this.http.get<any>( 'http://localhost:8080/TestPaper/updateById', {params: data});

@@ -11,7 +11,7 @@ import {UserService} from '../user.service';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {TestPaper} from '../model/TestPaper';
 
-type MODE = 'fundament'|'advanced'|'example'|'main'|'addition'|'resource'|'exam'|'change';
+type MODE = 'fundament'|'advanced'|'example'|'main'|'addition'|'resource'|'exam'|'change'|'user';
 type Answer= 'A'|'B'|'C'|'D';
 // 基础，进阶，实例，主页，拓展，资源（上传），测试,修改密码
 /*"fundament" 是基础知识中判断选择什么知识点*/
@@ -28,7 +28,6 @@ type CHOOSE = 'exam'|'test';
 })
 export class TeacherComponent implements OnInit {
   Answer: string;
-
   resource: Resource[];
   // 初始化模块选择
   MODE: MODE = 'main';
@@ -150,7 +149,7 @@ export class TeacherComponent implements OnInit {
       for (const r of this.resource) {
         this.sider.push(r.resourcename);
       }
-      console.log(this.sider);
+      // console.log(this.sider);
       // 获取用户(教师自己)上传的资源
       this.getTheResource('all');
       // 获取最新的三个资源展示在主页
@@ -176,7 +175,10 @@ export class TeacherComponent implements OnInit {
   }
   // 获取最新的三个资源展示在主页
   private getNewResource(): void {
-    this.newResource.fill(this.resource, this.resource.length - 3, this.resource.length - 1);
+    this.newResource.push(this.resource[this.resource.length - 3]);
+    this.newResource.push(this.resource[this.resource.length - 2]);
+    this.newResource.push(this.resource[this.resource.length - 1]);
+    console.log(this.newResource);
   }
   // marketdown
   // private getText(fileName: string) {
@@ -194,7 +196,6 @@ export class TeacherComponent implements OnInit {
 // 从服务器读取文件
   private getTheText(fileName: string) {
     this.resourceService.getContent(fileName).subscribe(re => {
-      console.log(re);
       this.inputValue = re;
       // 渲染数据
       const str = fileName.split('.');
