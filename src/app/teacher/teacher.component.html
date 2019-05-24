@@ -4,11 +4,12 @@
     <ul nz-menu [nzTheme]="'dark'" [nzMode]="'horizontal'" style="line-height: 64px;">
       <li nz-menu-item (click)="MODE ='main'">主页</li>
       <li nz-menu-item (click)="MODE ='addition';Sider='1'">知识点学习</li>
-      <li nz-menu-item (click)="MODE ='advanced'">拓展知识</li>
+      <li nz-menu-item (click)="MODE ='advanced';this.getResource();">拓展知识</li>
       <li nz-menu-item (click)="MODE ='fundament';Sider='1'">集合框架</li>
-      <li nz-menu-item (click)="MODE ='resource'">相关资源</li>
+      <li nz-menu-item (click)="MODE ='resource';this.getTheResource('all')">相关资源</li>
       <li nz-menu-item (click)="MODE ='exam';this.getExam();this.getTestPaper()">在线测试</li>
-      <li nz-menu-item *ngIf="this.user.type !== '游客'" (click)="Pvisible=true">修改密码</li>
+      <li nz-menu-item *ngIf="this.user.type !== '游客'" (click)="getInfo();Pvisible=true">修改信息</li>
+      <!--<li nz-menu-item *ngIf="this.user.type !== '游客'" (click)="getInfo();MODE ='user';">修改信息</li>-->
       <li nz-menu-item *ngIf="this.user.type !== '游客'" (click)="logout()">注销</li>
       <li nz-menu-item *ngIf="this.user.type === '游客'" (click)="logout()">登陆</li>
       <li nz-menu-item *ngIf="this.user.type !== '游客'" ><a routerLink="../admin">管理中心</a></li>
@@ -83,7 +84,7 @@
 
       <!--相关资源的侧边栏-->
       <div *ngIf=" MODE == 'resource'">
-        <button nz-button nzType="primary" (click)="open()">Open</button>
+        <button nz-button nzType="primary" style="top: 50px;" (click)="this.open()">上传</button>
       </div>
 
     </nz-sider>
@@ -137,6 +138,7 @@
             <h1>在线实例测试工具</h1>
             <h2>在这里，浏览我们的知识点。</h2>
             <h2>通过使用我们的在线编辑器，你可以编辑这些例子，并对代码进行实验。</h2>
+            <button nz-button nzType="primary" (click)="goCompile('');" style="float: none">马上试试</button>
           </div>
 
           <!--知识点-->
@@ -1164,7 +1166,7 @@
         <div *ngIf=" MODE == 'advanced'">
           <!--预览模式-->
           <div *ngIf=" TYPE == 'finish'">
-            <i nz-icon type="edit" theme="outline" (click)=" TYPE = 'edit'"></i>
+            <!--<i nz-icon type="edit" theme="outline" (click)=" TYPE = 'edit'"></i>-->
             <nz-tabset>
               <nz-tab nzTitle="{{title}}">
                 <pre [innerHTML]="preview" ></pre>
@@ -1525,8 +1527,8 @@
         <!--相关资源模块-->
         <div *ngIf=" MODE == 'resource'">
           <nz-breadcrumb>
-            <nz-breadcrumb-item><a  (click)="getTheResource('all')">All Resource</a></nz-breadcrumb-item>
-            <nz-breadcrumb-item *ngIf="this.user.type === 'teacher' || this.user.type === 'admin'"><a (click)="getTheResource('my')">My Resource</a></nz-breadcrumb-item>
+            <nz-breadcrumb-item><a  (click)="getTheResource('all')">所有资源</a></nz-breadcrumb-item>
+            <nz-breadcrumb-item *ngIf="this.user.type === 'teacher' || this.user.type === 'admin'"><a (click)="getTheResource('my')">我的资源</a></nz-breadcrumb-item>
           </nz-breadcrumb>
 
 
@@ -1544,7 +1546,7 @@
                 <label>模块属于</label>
                 <nz-radio-group [(ngModel)]="theModelName" [ngModelOptions]="{standalone: true}">
                   <label nz-radio nzValue='知识点'>知识点</label>
-                  <label nz-radio nzValue='java工具'>java工具</label>
+                  <!--<label nz-radio nzValue='java工具' [nzDisabled]="disabled">java工具</label>-->
                 </nz-radio-group>
               </div>
             </form>
@@ -1565,10 +1567,10 @@
           <nz-table #basicTable [nzData]="theResource" [nzLoading]="loading">
             <thead>
             <tr>
-              <th>Author</th>
-              <th>ResourceName</th>
-              <th>modelName</th>
-              <th>Action</th>
+              <th>作者</th>
+              <th>资源名称</th>
+              <th>类型</th>
+              <th>操作</th>
             </tr>
             </thead>
             <tbody>
@@ -1611,7 +1613,7 @@
                 <p>题目：<input [(ngModel)]="examModal.question"/></p>
                 <p>题型：<nz-select style="width: 120px;" [(ngModel)]="examModal.type"nzPlaceHolder="Choose">
                         <nz-option nzValue="选择题" nzLabel="选择题"></nz-option>
-                        <nz-option nzValue="填空题" nzLabel="填空题"></nz-option>
+                        <!--<nz-option nzValue="填空题" nzLabel="填空题"></nz-option>-->
                         </nz-select></p>
                 <p>a选项：   <input [(ngModel)]="examModal.a"/></p>
                 <p>b选项：   <input [(ngModel)]="examModal.b"/></p>
@@ -1720,9 +1722,9 @@
                 </tr>
                 <tr>
                   <nz-radio-group [(ngModel)]="data.answer">
-                    <td> <label nz-radio nzValue="A">A{{data.a}}</label></td>
-                    <td> <label nz-radio nzValue="B">B{{data.b}}</label></td>
-                    <td> <label nz-radio nzValue="C">C{{data.c}}</label></td>
+                    <td> <label nz-radio nzValue="A">A.{{data.a}}</label></td>
+                    <td> <label nz-radio nzValue="B">B.{{data.b}}</label></td>
+                    <td> <label nz-radio nzValue="C">C.{{data.c}}</label></td>
                   </nz-radio-group>
                 </tr>
                 <br/>
@@ -1734,11 +1736,19 @@
         </div>
         <!--修改密码模块-->
         <div >
-          <nz-drawer [nzClosable]="false" [nzVisible]="Pvisible" nzPlacement="top" nzTitle="修改密码" (nzOnClose)="close()">
-           <p><label>当前用户</label>
+          <nz-drawer [nzClosable]="false" [nzVisible]="Pvisible" nzPlacement="left" nzTitle="修改信息" (nzOnClose)="close()">
+           <p><label>当前用户：</label>
             <input value="{{this.user.loginname}}" readonly> </p>
-            <p><label>新密码：</label>
-            <input [(ngModel)]="this.user.password"> </p>
+            <label>年龄：</label><br>
+            <input [(ngModel)]="this.user.age"/>
+            <br>
+            <label>地址：</label><br>
+            <input [(ngModel)]="this.user.address" />
+            <!--<p><label>新密码：</label>-->
+              <!--<input [(ngModel)]="this.user.password"> </p>-->
+            <h3>在确认修改信息之前我们需要确认是你本人</h3>
+            <p><label>现密码：</label>
+              <input [(ngModel)]="this.user.vpassword"> </p>
             <p><button nz-button nzType="primary"  (click)="update()">修改</button></p>
           </nz-drawer>
         </div>

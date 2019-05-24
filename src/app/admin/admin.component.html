@@ -157,31 +157,31 @@
               <td>{{data.age}}</td>
               <td>{{data.password}}</td>
               <td>{{data.type}}</td>
-              <td><i nz-icon type="edit" theme="outline" (click)="showModal() " ></i></td>
-              <nz-modal  [(nzVisible)]="isVisible" nzTitle="Update" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk(data)" >
-                <form nz-form  >
-                  <nz-form-item>
-                    <nz-form-label [nzSpan]="6" >username</nz-form-label>
-                    <nz-form-control [nzSpan]="14">
-                      <input nz-input name="username"  [(ngModel)]="data.loginname">
-                    </nz-form-control>
-                    <nz-form-label [nzSpan]="6" >password</nz-form-label>
-                    <nz-form-control [nzSpan]="14">
-                      <input nz-input name="password" [(ngModel)]="data.password">
-                    </nz-form-control>
-                    <nz-form-label [nzSpan]="6" >age</nz-form-label>
-                    <nz-form-control [nzSpan]="14">
-                      <input nz-input name="age" [(ngModel)]="data.age">
-                    </nz-form-control>
-                  </nz-form-item >
-                </form>
-              </nz-modal>
+              <td><i nz-icon type="edit" theme="outline" (click)="showModa(data) " ></i></td>
+
               <td><i nz-icon type="delete" theme="outline" (click)="delete(data.id)"></i></td>
 
             </tr>
             </tbody>
           </nz-table>
-
+          <nz-modal  [(nzVisible)]="isVisible" nzTitle="Update" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk(newUser)" >
+            <form nz-form  >
+              <nz-form-item>
+                <nz-form-label [nzSpan]="6" >username</nz-form-label>
+                <nz-form-control [nzSpan]="14">
+                  <input nz-input name="username"  [(ngModel)]="newUser.loginname">
+                </nz-form-control>
+                <nz-form-label [nzSpan]="6" >password</nz-form-label>
+                <nz-form-control [nzSpan]="14">
+                  <input nz-input name="password" [(ngModel)]="newUser.password">
+                </nz-form-control>
+                <nz-form-label [nzSpan]="6" >age</nz-form-label>
+                <nz-form-control [nzSpan]="14">
+                  <input nz-input name="age" [(ngModel)]="newUser.age">
+                </nz-form-control>
+              </nz-form-item >
+            </form>
+          </nz-modal>
         </div>
 
 
@@ -303,7 +303,7 @@
               <td>{{data.date}}</td>
               <td>{{data.isusable}}</td>
               <td><i nz-icon type="edit" theme="outline" (click)="this.isVisible = true" ></i></td>
-              <nz-modal [(nzVisible)]="isVisible" nzTitle="{{data.resourcename}}" (nzOnCancel)="handleCancel()" (nzOnOk)="this.loading = true; handleOk(); this.editResource(data.id)">
+              <nz-modal [(nzVisible)]="isVisible" nzTitle="{{data.resourcename}}" (nzOnCancel)="handleCancel()" (nzOnOk)="this.loading = true; this.editResource(data.id)">
                 <span>审批情况：</span>
                 <nz-select style="width: 120px;" title="审批情况：" [(ngModel)]="approvalResult" >
                   <nz-option nzValue="审批通过" nzLabel="审批通过"></nz-option>
@@ -343,22 +343,22 @@
               <td>{{data.a}}</td>
               <td>{{data.b}}</td>
               <td>{{data.c}}</td>
-              <td><i nz-icon type="edit" theme="outline" (click)="showModal()" ></i></td>
-              <nz-modal [(nzVisible)]="isVisible" nzTitle="修改题目" nzMask="true" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk(data)">
-              <p>题目：<input [(ngModel)]="data.question" /></p>
-              <p>题型：<nz-select style="width: 120px;" [(ngModel)]="data.type"nzPlaceHolder="Choose">
-                <nz-option nzValue="选择题" nzLabel="选择题"></nz-option>
-                <nz-option nzValue="填空题" nzLabel="填空题"></nz-option>
-              </nz-select></p>
-              <p>a选项：   <input [(ngModel)]="data.a"/></p>
-              <p>b选项：   <input [(ngModel)]="data.b"/></p>
-              <p>c选项：   <input [(ngModel)]="data.c"/></p>
-              <p>正确答案：<input [(ngModel)]="data.answer" readonly/></p>
-              <p>分值：    <input [(ngModel)]="data.grade"/></p>
-              </nz-modal>
+              <td><i nz-icon type="edit" theme="outline" (click)="showModa(data)" ></i></td>
             </tr>
             </tbody>
           </nz-table>
+          <nz-modal [(nzVisible)]="isVisible" nzTitle="修改题目" nzMask="true" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk(newExam)">
+            <p>题目：<input [(ngModel)]="newExam.question" /></p>
+            <p>题型：<nz-select style="width: 120px;" [(ngModel)]="newExam.type"nzPlaceHolder="Choose">
+              <nz-option nzValue="选择题" nzLabel="选择题"></nz-option>
+              <nz-option nzValue="填空题" nzLabel="填空题"></nz-option>
+            </nz-select></p>
+            <p>a选项：   <input [(ngModel)]="newExam.a"/></p>
+            <p>b选项：   <input [(ngModel)]="newExam.b"/></p>
+            <p>c选项：   <input [(ngModel)]="newExam.c"/></p>
+            <p>正确答案：<input [(ngModel)]="newExam.answer" readonly/></p>
+            <p>分值：    <input [(ngModel)]="newExam.grade"/></p>
+          </nz-modal>
         </div>
       </div>
       <!--testPaper-->
@@ -382,24 +382,24 @@
               <td>{{data.name}}</td>
               <td>{{data.difficulty}}</td>
               <td>{{data.remark}}</td>
-              <td><i nz-icon type="edit" theme="outline" (click)="showModal()" ></i></td>
-                <nz-modal [(nzVisible)]="isVisible" nzTitle="新试卷" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk(data)">
-                  <p>试卷名称：<input [(ngModel)]="data.name"/></p>
-                  <!--<p>题目<nz-select style="width: 100%" [(ngModel)]="multipleValue" [nzSize]="size" nzMode="multiple" nzPlaceHolder="Please select">-->
-                    <!--<nz-option *ngFor="let option of listOfOption" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>-->
-                  <!--</nz-select></p>-->
-                  <p>难度：<nz-select style="width: 120px;" [(ngModel)]="data.difficulty" nzPlaceHolder="Choose">
-                    <nz-option nzValue="简单" nzLabel="简单" name=""></nz-option>
-                    <nz-option nzValue="中等" nzLabel="中等"></nz-option>
-                    <nz-option nzValue="难" nzLabel="难"></nz-option>
-                  </nz-select></p>
-                  <p>备注：<input [(ngModel)]="data.remark"/></p>
-                </nz-modal>
+              <td><i nz-icon type="edit" theme="outline" (click)="showModa(data)" ></i></td>
+
               <td><i nz-icon type="delete" theme="outline" (click)="deleteTestPaper(data.id)"></i></td>
             </tr>
             </tbody>
           </nz-table>
-
+          <nz-modal [(nzVisible)]="isVisible" nzTitle="新试卷" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk(newTest)">
+            <p>试卷名称：<input [(ngModel)]="newTest.name"/></p>
+            <!--<p>题目<nz-select style="width: 100%" [(ngModel)]="multipleValue" [nzSize]="size" nzMode="multiple" nzPlaceHolder="Please select">-->
+            <!--<nz-option *ngFor="let option of listOfOption" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>-->
+            <!--</nz-select></p>-->
+            <p>难度：<nz-select style="width: 120px;" [(ngModel)]="newTest.difficulty" nzPlaceHolder="Choose">
+              <nz-option nzValue="简单" nzLabel="简单" name=""></nz-option>
+              <nz-option nzValue="中等" nzLabel="中等"></nz-option>
+              <nz-option nzValue="难" nzLabel="难"></nz-option>
+            </nz-select></p>
+            <p>备注：<input [(ngModel)]="newTest.remark"/></p>
+          </nz-modal>
         </div>
       </div>
 

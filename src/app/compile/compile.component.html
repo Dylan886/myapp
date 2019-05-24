@@ -7,7 +7,16 @@
     <a><i nz-icon type="user"></i><span>在线编写代码</span></a>
   </nz-breadcrumb-item>
 </nz-breadcrumb>
-<div style="width: 60%; left: 80px; ">
+<div style="margin: 0">
+<div style="width: 60%; left: 80px; margin: 0">
   <textarea rows="20" nz-input [(ngModel)]="compileCode" style="background-color: azure"></textarea>
   <button nz-button (click)="compile()" style="text-align: center;">运行</button>
+</div>
+<div style="width: 30%;position:absolute; top:40px; left:61%">
+  <nz-card style="width:300px;" nzTitle="运行结果">
+        <p>编译结果：{{output.commsg}}</p>
+        <p>运行结果：{{output.runmsg}}</p>
+        <p>输出结果：{{output.outmsg}}</p>
+  </nz-card>
+</div>
 </div>

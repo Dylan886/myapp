@@ -23,6 +23,11 @@ type MODE = 'null'|'add'|'other'|'approved'|'deny'|'draft'|'deleted'|'exam'|'tes
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
+  // new data
+  newExam: Exam = new Exam();
+  newResource: Resource = new Resource();
+  newUser: User = new User();
+  newTest: TestPaper = new TestPaper();
   // resource
     resource: Resource[];    // all
     resource1: Resource[];    // filter
@@ -88,7 +93,15 @@ export class AdminComponent implements OnInit {
     }
     this.getJur();
     this.getUser();
-    this.getResource();
+    this.resourceService.queryAll().subscribe( (re: any ) => {
+      this.resource = re;
+      const ar = this.resource.find( function (item) {
+        return item.isusable === '等待审核';
+      } );
+      if (ar !== undefined) {
+        alert( '存在未审核的资源，请及时审核' );
+      }
+    });
   }
   // 获取数据
   private getUser(): void {
@@ -123,17 +136,10 @@ export class AdminComponent implements OnInit {
       this.loading = false;
     });
   }
-  // 获取所有资源
+  // 获取所有资源s
   private getResource() {
     this.resourceService.queryAll().subscribe( (re: any ) => {
       this.resource = re;
-      const ar = this.resource.find(function(item) {
-        return item.isusable === '等待审核';
-      });
-      if ( ar !== undefined) {
-        alert('存在未审核的资源，请及时审核');
-      }
-      console.log(re);
       this.loading = false;
     });
   }
@@ -284,7 +290,21 @@ deleteTestPaper(id: any): void {
     this.resourceService.update(re).subscribe( data => {
       console.log(data);
       this.getResource();
+      // get condition
+      this.loading = true;
+      let u = '';
+      if (this.mode === 'draft') {
+        u = '等待审核';
+      } else if (this.mode === 'deny') {
+        u = '下线整改';
+      } else if (this.mode === 'deleted') {
+        u = '已移除';
+      } else if (this.mode === 'approved') {
+        u = '审批通过';
+      }
+      this.getTheResource(u);
       this.loading = false;
+      this.isVisible = false;
     });
   }
   // modal
@@ -295,9 +315,23 @@ deleteTestPaper(id: any): void {
     // this.modal_username = data.loginname;
     // this.modal_password = data.password;
     // this.modal_age = data.age;
-
   }
-
+// modal hold condition
+  showModa(data: Object): void {
+    this.loading = true;
+    this.isVisible = true;
+    if (data.hasOwnProperty('url')) {
+      this.newResource = <Resource>data;
+    } else if ( data.hasOwnProperty('loginname')) {
+      this.newUser = <User>data;
+    } else if (data.hasOwnProperty('a')) {
+      this.newExam = <Exam>data;
+    } else if (data.hasOwnProperty('difficulty')) {
+      this.newTest = <TestPaper>data;
+    } else {
+      alert('未知错误');
+    }
+  }
   // 修改数据
   handleOk(data: Object): void {
     if (data.hasOwnProperty('a')) {

@@ -142,12 +142,13 @@ export class TeacherComponent implements OnInit {
 
   // 获取全部资源
   private getResource() {
+    this.sider = [];
     this.resourceService.queryAll().subscribe((re: any) => {
       this.resource = re;
       console.log(this.resource);
       // 获取侧边栏
-      for (const r of this.resource) {
-        this.sider.push(r.resourcename);
+      for (let r of this.resource) {
+        if (r.isusable === '审批通过') { this.sider.push(r.resourcename); }
       }
       // console.log(this.sider);
       // 获取用户(教师自己)上传的资源
@@ -162,10 +163,6 @@ export class TeacherComponent implements OnInit {
     // console.log(type);
     this.loading = true;
     if ( type === 'my') {
-      // console.log(typeof(this.user.id));
-      for (const u of this.resource) {
-        console.log(typeof (u.uid));
-      }
       this.theResource = this.resource.filter(item => item.uid.toString() === this.user.id.toString() );
       this.loading = false;
     } else {
@@ -205,6 +202,7 @@ export class TeacherComponent implements OnInit {
   }
   // 抽屉
   open(): void {
+    this.author = this.username;
     this.visible = true;
   }
   close(): void {
@@ -300,16 +298,24 @@ export class TeacherComponent implements OnInit {
     this.multipleValue = [];
     this.remark = '';
     this.examName = '';
+    this.examModal= new Exam();
   }
 
   // 修改password
   update() {
-    let u = new User();
+    if (this.user.vpassword !== sessionStorage.getItem('password')) {
+      alert('请先通过密码验证本人');
+      return;
+    }
+    const u = new User();
     u.id = this.user.id;
-    u.password = this.user.password;
+    u.address = this.user.address;
+    u.age = this.user.age;
     this.userService.update(u).subscribe( data => {
       console.log(data);
-      this.user.password = '';
+      this.clear();
+      this.user.vpassword = '';
+      this.Pvisible = false;
     });
   }
 
@@ -339,7 +345,7 @@ export class TeacherComponent implements OnInit {
   changeSelected(selected: String ): void {
     const re = this.resource.filter( item => item.resourcename === selected );
     // 重新渲染
-    this.getTheText(re[0].resourcename + '.txt');
+    this.getTheText(re[0].url);
   }
 // Modal
   showModal(): void {
@@ -347,12 +353,13 @@ export class TeacherComponent implements OnInit {
   }
 
   handleOk(): void {
-    if (this.examModal.question !== '') { // 新增题目
+    if (this.examModal.question !== undefined) { // 新增题目
       console.log(this.examModal);
       this.insertExam();
     } else { // 新增试卷
       this.insertTestPaper();
     }
+    this.clear();
     this.isVisible = false;
   }
 
@@ -368,8 +375,9 @@ export class TeacherComponent implements OnInit {
     test.uid = this.user.id;
     test.exam = this.multipleValue.toString();
     test.difficulty = this.selectedValue;
-    test.remark = this.remark;
+    if (this.remark.length > 0 ) {test.remark = this.remark; } else { test.remark = '无'; }
     this.resourceService.insertTestPaper(test).subscribe( re => {
+      this.getTestPaper();
       this.clear();
     });
   }
@@ -377,6 +385,7 @@ export class TeacherComponent implements OnInit {
   private insertExam() {
     this.resourceService.insertExam(this.examModal).subscribe( re => {
       this.clear();
+      this.getExam();
     });
   }
 
@@ -393,8 +402,7 @@ export class TeacherComponent implements OnInit {
   }
   private getGrade() {
     this.resourceService.getGrade(this.theTest).subscribe( re => {
-      alert(re);
-      console.log(re);
+      alert('本次得分' + re + '分');
       this.isTest = false;
       this.theTest = [];
     });
@@ -403,7 +411,19 @@ export class TeacherComponent implements OnInit {
   private logout() {
     sessionStorage.clear();
     this.clear();
+    this.user = null;
     this.routers.navigate(['login']);
+  }
+  private goCompile(date: string) {
+    sessionStorage.setItem('code', date);
+    this.routers.navigate(['compile']);
+  }
+  private getInfo() {
+    this.userService.queryById(this.user.id).subscribe( re => {
+      console.log(re);
+      this.user = re;
+      this.user.password = '';
+    });
   }
 }
 
